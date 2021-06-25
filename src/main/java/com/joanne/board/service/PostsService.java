@@ -2,12 +2,16 @@ package com.joanne.board.service;
 
 import com.joanne.board.domain.posts.Posts;
 import com.joanne.board.domain.posts.PostsRepository;
+import com.joanne.board.web.dto.PostsListResponse;
 import com.joanne.board.web.dto.PostsResponse;
 import com.joanne.board.web.dto.PostsSaveRequest;
 import com.joanne.board.web.dto.PostsUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -17,6 +21,13 @@ public class PostsService {
     public Long save(PostsSaveRequest request) {
         final Posts posts = postsRepository.save(request.toEntity());
         return posts.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponse> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponse::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
